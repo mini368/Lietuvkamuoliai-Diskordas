@@ -400,7 +400,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         elif policy.value == DonationPolicy.ALWAYS_DENY:
             await interaction.response.send_message(
                 f"Nustatymas pakeistas, kiti dabar nebegali naudoti {self.give.extras['mention']} su "
-                "jumis. Kitavertus, įmanoma gauti dovanas per mainus."
+                "jumis. Kita vertus, įmanoma gauti dovanų per mainus."
             )
         else:
             await interaction.response.send_message("Invalid input!")
@@ -432,7 +432,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
             )
             return
         if user.bot:
-            await interaction.response.send_message("You cannot donate to bots.")
+            await interaction.response.send_message("Negalite dovanoti kamuolių programoms.")
             return
         if countryball.id in self.bot.locked_balls:
             await interaction.response.send_message(
@@ -470,7 +470,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         await countryball.save()
 
         await interaction.response.send_message(
-            f"Ką tik dovanavai {user.mention} kamuolį "
+            f"Ką tik padovanojai {user.mention} kamuolį "
             f"{countryball.description(short=True, include_emoji=True, bot=self.bot)} "
         )
         del self.bot.locked_balls[countryball.id]
