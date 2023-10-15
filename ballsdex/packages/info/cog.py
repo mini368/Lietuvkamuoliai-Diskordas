@@ -96,17 +96,17 @@ class Info(commands.Cog):
         embed.description = (
             f"{' '.join(str(x) for x in balls)}\n"
             f"{settings.about_description}\n"
-            f"*Running version **[{ballsdex_version}]({settings.github_link}/releases)***\n\n"
-            f"**{balls_count}** {settings.collectible_name}s to collect\n"
-            f"**{players_count}** players that caught "
-            f"**{balls_instances_count}** {settings.collectible_name}s\n"
-            f"**{len(self.bot.guilds)}** servers playing\n\n"
-            "This bot was made by **El Laggron**, consider supporting me on my "
+            f"*Dabartinė versija **[{ballsdex_version}]({settings.github_link}/releases)***\n\n"
+            f"**{balls_count}** kamuoliai kuriuos gali surinkti\n"
+            f"**{players_count}** žaidėjų, kurie sugavo "
+            f"**{balls_instances_count}** kamuolius\n"
+            f"**{len(self.bot.guilds)}** serveriuose veikia\n\n"
+            "Ši programa buvo sukurta **El Laggron**, apgalvok paremti mane mano "
             "[Patreon](https://patreon.com/retke) :heart:\n\n"
-            f"[Discord server]({settings.discord_invite}) • [Invite me]({invite_link}) • "
-            f"[Source code and issues]({settings.github_link})\n"
-            f"[Terms of Service]({settings.terms_of_service}) • "
-            f"[Privacy policy]({settings.privacy_policy})"
+            f"[Diskordas]({settings.discord_invite}) • [Pakviesk mane]({invite_link}) • "
+            f"[Kodas ir problemos]({settings.github_link})\n"
+            f"[Paslaugų teikimo sąlygos]({settings.terms_of_service}) • "
+            f"[Privatumo politika]({settings.privacy_policy})"
         )
 
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)

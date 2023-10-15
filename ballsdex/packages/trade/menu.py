@@ -44,54 +44,54 @@ class TradeView(View):
             self.trade._get_trader(interaction.user)
         except RuntimeError:
             await interaction.response.send_message(
-                "You are not allowed to interact with this trade.", ephemeral=True
+                "Nesate šių mainų dalis.", ephemeral=True
             )
             return False
         else:
             return True
 
-    @button(label="Lock proposal", emoji="\N{LOCK}", style=discord.ButtonStyle.primary)
+    @button(label="Užrakinti pasiūlymą", emoji="\N{LOCK}", style=discord.ButtonStyle.primary)
     async def lock(self, interaction: discord.Interaction, button: Button):
         trader = self.trade._get_trader(interaction.user)
         if trader.locked:
             await interaction.response.send_message(
-                "You have already locked your proposal!", ephemeral=True
+                "Jau užrakinai savo pasiūlymą", ephemeral=True
             )
             return
         await self.trade.lock(trader)
         if self.trade.trader1.locked and self.trade.trader2.locked:
             await interaction.response.send_message(
-                "Your proposal has been locked. Now confirm again to end the trade.",
+                "Jūsų pasiūlymas buvo užrakintas. Dabar patvirtinkite, kad užbaigtumėte mainus.",
                 ephemeral=True,
             )
         else:
             await interaction.response.send_message(
-                "Your proposal has been locked. "
-                "You can wait for the other user to lock their proposal.",
+                "Jūsų pasiūlymas buvo užrakintas. "
+                "Dabar turite laukti, kol kitas žmogus užrakins savąjį.",
                 ephemeral=True,
             )
 
-    @button(label="Reset", emoji="\N{DASH SYMBOL}", style=discord.ButtonStyle.secondary)
+    @button(label="Atstatyti", emoji="\N{DASH SYMBOL}", style=discord.ButtonStyle.secondary)
     async def clear(self, interaction: discord.Interaction, button: Button):
         trader = self.trade._get_trader(interaction.user)
         if trader.locked:
             await interaction.response.send_message(
-                "You have locked your proposal, it cannot be edited! "
-                "You can click the cancel button to stop the trade instead.",
+                "Jūsų pasiūlymas buvo užrakintas, jis nebegali būti pakeistas! "
+                "Vietoj to, galite atšaukti mainus.",
                 ephemeral=True,
             )
         else:
             trader.proposal.clear()
-            await interaction.response.send_message("Proposal cleared.", ephemeral=True)
+            await interaction.response.send_message("Pasiūlymas atstatytas.", ephemeral=True)
 
     @button(
-        label="Cancel trade",
+        label="Atšaukti mainus",
         emoji="\N{HEAVY MULTIPLICATION X}\N{VARIATION SELECTOR-16}",
         style=discord.ButtonStyle.danger,
     )
     async def cancel(self, interaction: discord.Interaction, button: Button):
         await self.trade.user_cancel(self.trade._get_trader(interaction.user))
-        await interaction.response.send_message("Trade has been cancelled.", ephemeral=True)
+        await interaction.response.send_message("Mainai buvo atšaukti.", ephemeral=True)
 
 
 class ConfirmView(View):
@@ -104,7 +104,7 @@ class ConfirmView(View):
             self.trade._get_trader(interaction.user)
         except RuntimeError:
             await interaction.response.send_message(
-                "You are not allowed to interact with this trade.", ephemeral=True
+                "Nesate šių mainų dalis.", ephemeral=True
             )
             return False
         else:
@@ -117,21 +117,21 @@ class ConfirmView(View):
         trader = self.trade._get_trader(interaction.user)
         if trader.accepted:
             await interaction.response.send_message(
-                "You have already accepted this trade.", ephemeral=True
+                "Jūs jau sutikote su šiais mainais.", ephemeral=True
             )
             return
         await interaction.response.defer(ephemeral=True, thinking=True)
         result = await self.trade.confirm(trader)
         if self.trade.trader1.accepted and self.trade.trader2.accepted:
             if result:
-                await interaction.followup.send("The trade is now concluded.", ephemeral=True)
+                await interaction.followup.send("Mainai baigti.", ephemeral=True)
             else:
                 await interaction.followup.send(
                     ":warning: An error occurred while concluding the trade.", ephemeral=True
                 )
         else:
             await interaction.followup.send(
-                "You have accepted the trade, waiting for the other user...", ephemeral=True
+                "Sutikote su šiais mainais, laukiama kito asmens...", ephemeral=True
             )
 
     @discord.ui.button(
@@ -140,7 +140,7 @@ class ConfirmView(View):
     )
     async def deny_button(self, interaction: discord.Interaction, button: Button):
         await self.trade.user_cancel(self.trade._get_trader(interaction.user))
-        await interaction.response.send_message("Trade has been cancelled.", ephemeral=True)
+        await interaction.response.send_message("Mainai buvo atšaukti.", ephemeral=True)
 
 
 class TradeMenu:
@@ -172,18 +172,18 @@ class TradeMenu:
         add_command = self.cog.add.extras.get("mention", "`/trade add`")
         remove_command = self.cog.remove.extras.get("mention", "`/trade remove`")
 
-        self.embed.title = f"{settings.collectible_name.title()}s trading"
+        self.embed.title = f"Kamuolių mainai"
         self.embed.color = discord.Colour.blurple()
         self.embed.description = (
-            f"Add or remove {settings.collectible_name}s you want to propose to the other player "
-            f"using the {add_command} and {remove_command} commands.\n"
-            "Once you're finished, click the lock button below to confirm your proposal.\n"
-            "You can also lock with nothing if you're receiving a gift.\n\n"
-            "*You have 15 minutes before this interaction ends.*"
+            f"Pridėk arba išimk kamuolius, kuriuos nori siūlyti kitam žmogui\n"
+            f"naudojant {add_command} ir {remove_command} komandas.\n"
+            "Kai baigsi, spausk užrakinimo mygtuką žemiau, kad patvirtintum savo pasiūlymą.\n"
+            "Taip pat galite užrakinti nieko neįdėję jei tai dovana.\n\n"
+            "*Turite 15 minučių prieš pasibaigiant šiom derybom.*"
         )
         self.embed.set_footer(
-            text="This message is updated every 15 seconds, "
-            "but you can keep on editing your proposal."
+            text="Ši žinutė atnaujinama kas 15 sekundžių, "
+            "bet gali keisti savo pasiūlyma betkiek."
         )
 
     def _get_prefix_emote(self, trader: TradingUser) -> str:
@@ -218,7 +218,7 @@ class TradeMenu:
             proposal[i] += text
 
         if not proposal[0]:
-            proposal[0] = "*Empty*"
+            proposal[0] = "*Nieko*"
 
         return proposal
 
@@ -287,7 +287,7 @@ class TradeMenu:
             await asyncio.sleep(15)
             if datetime.utcnow() - start_time > timedelta(minutes=15):
                 self.embed.colour = discord.Colour.dark_red()
-                await self.cancel("The trade timed out")
+                await self.cancel("Sandoriui baigėsi laikas")
                 return
 
             try:
@@ -299,7 +299,7 @@ class TradeMenu:
                     f"trader1={self.trader1.user.id} trader2={self.trader2.user.id}"
                 )
                 self.embed.colour = discord.Colour.dark_red()
-                await self.cancel("The trade timed out")
+                await self.cancel("Sandoriui baigėsi laikas")
                 return
 
     async def start(self):
@@ -309,14 +309,14 @@ class TradeMenu:
         self._generate_embed()
         self.update_proposals()
         self.message = await self.channel.send(
-            content=f"Hey {self.trader2.user.mention}, {self.trader1.user.name} "
-            "is proposing a trade with you!",
+            content=f"Ei {self.trader2.user.mention}, {self.trader1.user.name} "
+            "tau siūlo mainus!",
             embed=self.embed,
             view=self.current_view,
         )
         self.task = self.bot.loop.create_task(self.update_message_loop())
 
-    async def cancel(self, reason: str = "The trade has been cancelled."):
+    async def cancel(self, reason: str = "Šie mainai buvo atšaukti."):
         """
         Cancel the trade immediately.
         """
@@ -347,7 +347,7 @@ class TradeMenu:
 
             self.embed.colour = discord.Colour.yellow()
             self.embed.description = (
-                "Both users locked their propositions! Now confirm to conclude this trade."
+                "Abu žmonės užrakino savo pasiūlymus! Dabar patvirtinkite, kad baigtumėte mainus."
             )
             self.current_view = ConfirmView(self)
             await self.message.edit(content=None, embed=self.embed, view=self.current_view)
@@ -400,7 +400,7 @@ class TradeMenu:
                 # shouldn't happen but just in case
                 self.task.cancel()
 
-            self.embed.description = "Trade concluded!"
+            self.embed.description = "Mainai baigti!"
             self.embed.colour = discord.Colour.green()
             self.current_view.stop()
             for item in self.current_view.children:

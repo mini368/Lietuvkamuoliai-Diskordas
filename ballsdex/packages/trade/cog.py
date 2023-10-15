@@ -93,11 +93,11 @@ class Trade(commands.GroupCog):
             The user you want to trade with
         """
         if user.bot:
-            await interaction.response.send_message("You cannot trade with bots.", ephemeral=True)
+            await interaction.response.send_message("Negali mainytis su kitomis programomis.", ephemeral=True)
             return
         if user.id == interaction.user.id:
             await interaction.response.send_message(
-                "You cannot trade with yourself.", ephemeral=True
+                "Negali mainytis su savimi.", ephemeral=True
             )
             return
 
@@ -105,12 +105,12 @@ class Trade(commands.GroupCog):
         trade2, trader2 = self.get_trade(channel=interaction.channel, user=user)
         if trade1 or trader1:
             await interaction.response.send_message(
-                "You already have an ongoing trade.", ephemeral=True
+                "Jau esate vykstančiuose mainuose.", ephemeral=True
             )
             return
         if trade2 or trader2:
             await interaction.response.send_message(
-                "The user you are trying to trade with is already in a trade.", ephemeral=True
+                "Žmogus, su kuriuo norite mainytis jau yra vykstančiuose mainuose.", ephemeral=True
             )
             return
 
@@ -121,7 +121,7 @@ class Trade(commands.GroupCog):
         )
         self.trades[interaction.guild.id][interaction.channel.id].append(menu)
         await menu.start()
-        await interaction.response.send_message("Trade started!", ephemeral=True)
+        await interaction.response.send_message("Mainai pradėti!", ephemeral=True)
 
     @app_commands.command()
     async def add(self, interaction: discord.Interaction, countryball: BallInstanceTransform):
@@ -137,14 +137,14 @@ class Trade(commands.GroupCog):
             return
         if not countryball.countryball.tradeable:
             await interaction.response.send_message(
-                "You cannot trade this countryball.", ephemeral=True
+                "Negalite pasiūlyti šio kamuolio.", ephemeral=True
             )
             return
         await interaction.response.defer(ephemeral=True, thinking=True)
         if countryball.favorite:
             view = ConfirmChoiceView(interaction)
             await interaction.followup.send(
-                "This countryball is a favorite, are you sure you want to trade it?",
+                "Šis kamuolys pažymėtas kaip mėgstamiausias, ar tikrai norite jį išmainyti?",
                 view=view,
                 ephemeral=True,
             )
@@ -154,25 +154,25 @@ class Trade(commands.GroupCog):
 
         trade, trader = self.get_trade(interaction)
         if not trade or not trader:
-            await interaction.followup.send("You do not have an ongoing trade.", ephemeral=True)
+            await interaction.followup.send("Jūs neturite vykstančių mainų.", ephemeral=True)
             return
         if trader.locked:
             await interaction.followup.send(
-                "You have locked your proposal, it cannot be edited! "
-                "You can click the cancel button to stop the trade instead.",
+                "Jūsų pasiūlymas buvo užrakintas, jis nebegali būti pakeistas! "
+                "Vietoj to, galite atšaukti mainus.",
                 ephemeral=True,
             )
             return
         if countryball in trader.proposal:
             await interaction.followup.send(
-                f"You already have this {settings.collectible_name} in your proposal.",
+                f"Jau įdėjote šį į kamuolį savo pasiūlymą",
                 ephemeral=True,
             )
             return
         if countryball.id in self.bot.locked_balls:
             await interaction.followup.send(
-                "This countryball is currently in an active trade or donation, "
-                "please try again later.",
+                "Šis kamuolys dabar yra vykstančiuose mainuose "
+                "prašome pabandyti dar kartą vėliau.",
                 ephemeral=True,
             )
             return
@@ -180,7 +180,7 @@ class Trade(commands.GroupCog):
         self.bot.locked_balls[countryball.id] = None
         trader.proposal.append(countryball)
         await interaction.followup.send(
-            f"{countryball.countryball.country} added.", ephemeral=True
+            f"{countryball.countryball.country} buvo pridėtas.", ephemeral=True
         )
 
     @app_commands.command()
@@ -199,23 +199,23 @@ class Trade(commands.GroupCog):
         trade, trader = self.get_trade(interaction)
         if not trade or not trader:
             await interaction.response.send_message(
-                "You do not have an ongoing trade.", ephemeral=True
+                "Jūs neturite vykstančių mainų.", ephemeral=True
             )
             return
         if trader.locked:
             await interaction.response.send_message(
-                "You have locked your proposal, it cannot be edited! "
-                "You can click the cancel button to stop the trade instead.",
+                "Jūsų pasiūlymas buvo užrakintas, jis nebegali būti pakeistas! "
+                "Vietoj to, galite atšaukti mainus.",
                 ephemeral=True,
             )
             return
         if countryball not in trader.proposal:
             await interaction.response.send_message(
-                f"That {settings.collectible_name} is not in your proposal.", ephemeral=True
+                f"Šis kamuolys nėra jūsų pasiūlyme.", ephemeral=True
             )
             return
         trader.proposal.remove(countryball)
         await interaction.response.send_message(
-            f"{countryball.countryball.country} removed.", ephemeral=True
+            f"{countryball.countryball.country} buvo pašalintas.", ephemeral=True
         )
         del self.bot.locked_balls[countryball.id]

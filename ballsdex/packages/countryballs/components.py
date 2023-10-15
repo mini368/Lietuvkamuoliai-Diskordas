@@ -24,9 +24,9 @@ caught_balls = Counter(
 )
 
 
-class CountryballNamePrompt(Modal, title=f"Catch this {settings.collectible_name}!"):
+class CountryballNamePrompt(Modal, title=f"Sugauk šį kamuolį!"):
     name = TextInput(
-        label="Name of this country", style=discord.TextStyle.short, placeholder="Your guess"
+        label="Kamuolio pavadinimas", style=discord.TextStyle.short, placeholder="Jūsų Spėjimas"
     )
 
     def __init__(self, ball: "CountryBall", button: CatchButton):
@@ -45,7 +45,7 @@ class CountryballNamePrompt(Modal, title=f"Catch this {settings.collectible_name
         # TODO: use lock
         if self.ball.catched:
             await interaction.response.send_message(
-                f"{interaction.user.mention} I was caught already!"
+                f"{interaction.user.mention} per vėlai!"
             )
             return
         if self.ball.model.catch_names:
@@ -61,23 +61,23 @@ class CountryballNamePrompt(Modal, title=f"Catch this {settings.collectible_name
 
             special = ""
             if ball.shiny:
-                special += f"✨ ***It's a shiny {settings.collectible_name} !*** ✨\n"
+                special += f"✨ ***Šis kamuolys buvo pasirašytas Nausėdos!*** ✨\n"
             if ball.specialcard and ball.specialcard.catch_phrase:
                 special += f"*{ball.specialcard.catch_phrase}*\n"
             if has_caught_before:
                 special += (
-                    f"This is a **new {settings.collectible_name}** "
-                    "that has been added to your completion!"
+                    f"Tai yra **naujas kamuolys** "
+                    "kuris buvo pridėtas į jūsų kolekciją!"
                 )
 
             await interaction.followup.send(
-                f"{interaction.user.mention} You caught **{self.ball.name}!** "
+                f"{interaction.user.mention} sugavai **{self.ball.name}!** "
                 f"(`#{ball.pk:0X}`)\n\n{special}",
             )
             self.button.disabled = True
             await interaction.followup.edit_message(self.ball.message.id, view=self.button.view)
         else:
-            await interaction.response.send_message(f"{interaction.user.mention} Wrong name!")
+            await interaction.response.send_message(f"{interaction.user.mention} Neteisingai!")
 
     async def catch_ball(
         self, bot: "BallsDexBot", user: discord.Member
@@ -135,12 +135,12 @@ class CountryballNamePrompt(Modal, title=f"Catch this {settings.collectible_name
 
 class CatchButton(Button):
     def __init__(self, ball: "CountryBall"):
-        super().__init__(style=discord.ButtonStyle.primary, label="Catch me!")
+        super().__init__(style=discord.ButtonStyle.primary, label="Sugauk mane!")
         self.ball = ball
 
     async def callback(self, interaction: discord.Interaction):
         if self.ball.catched:
-            await interaction.response.send_message("I was caught already!", ephemeral=True)
+            await interaction.response.send_message("Per vėlai!", ephemeral=True)
         else:
             await interaction.response.send_modal(CountryballNamePrompt(self.ball, self))
 

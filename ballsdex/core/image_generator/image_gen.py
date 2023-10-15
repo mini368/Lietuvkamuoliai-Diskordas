@@ -40,7 +40,7 @@ def draw_card(ball_instance: "BallInstance"):
 
     draw = ImageDraw.Draw(image)
     draw.text((50, 20), ball.short_name or ball.country, font=title_font)
-    for i, line in enumerate(textwrap.wrap(f"Ability: {ball.capacity_name}", width=28)):
+    for i, line in enumerate(textwrap.wrap(f"Galia: {ball.capacity_name}", width=28)):
         draw.text(
             (100, 1050 + 100 * i),
             line,
@@ -77,7 +77,7 @@ def draw_card(ball_instance: "BallInstance"):
         (30, 1870),
         # Modifying the line below is breaking the licence as you are removing credits
         # If you don't want to receive a DMCA, just don't
-        "Created by El Laggron\n" f"Artwork author: {ball.credits}",
+        "Sukurta El Laggron\n" f"Iliustracijos autorius: {ball.credits}",
         font=credits_font,
         fill=(0, 0, 0, 255),
         stroke_width=0,

@@ -39,7 +39,7 @@ class DonationRequest(View):
     async def interaction_check(self, interaction: discord.Interaction, /) -> bool:
         if interaction.user.id != self.new_player.discord_id:
             await interaction.response.send_message(
-                "You are not allowed to interact with this menu.", ephemeral=True
+                "Jums neleidžiama keisti to.", ephemeral=True
             )
             return False
         return True
@@ -65,7 +65,7 @@ class DonationRequest(View):
         await self.countryball.save()
         await interaction.response.edit_message(
             content=interaction.message.content
-            + "\n\N{WHITE HEAVY CHECK MARK} The donation was accepted!",
+            + "\n\N{WHITE HEAVY CHECK MARK} Dovana buvo priimta!",
             view=self,
         )
         del self.bot.locked_balls[self.countryball.id]
@@ -79,7 +79,7 @@ class DonationRequest(View):
         for item in self.children:
             item.disabled = True
         await interaction.response.edit_message(
-            content=interaction.message.content + "\n\N{CROSS MARK} The donation was denied.",
+            content=interaction.message.content + "\n\N{CROSS MARK} Dovana buvo atmesta.",
             view=self,
         )
         del self.bot.locked_balls[self.countryball.id]
@@ -136,11 +136,11 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         except DoesNotExist:
             if user == interaction.user:
                 await interaction.followup.send(
-                    f"You don't have any {settings.collectible_name} yet."
+                    f"Dar neturite kamuolių."
                 )
             else:
                 await interaction.followup.send(
-                    f"{user.name} doesn't have any {settings.collectible_name} yet."
+                    f"{user.name} dar neturi kamuolių."
                 )
             return
 
@@ -162,11 +162,11 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         if len(countryballs) < 1:
             if user == interaction.user:
                 await interaction.followup.send(
-                    f"You don't have any {settings.collectible_name} yet."
+                    f"Dar neturite kamuolių."
                 )
             else:
                 await interaction.followup.send(
-                    f"{user.name} doesn't have any {settings.collectible_name} yet."
+                    f"{user.name} dar neturi kamuolių."
                 )
             return
         if reverse:
@@ -176,7 +176,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         if user == interaction.user:
             await paginator.start()
         else:
-            await paginator.start(content=f"Viewing {user.name}'s {settings.collectible_name}s")
+            await paginator.start(content=f"Žiūrit {user.name} kamuolius")
 
     @app_commands.command()
     @app_commands.checks.cooldown(1, 60, key=lambda i: i.user.id)
@@ -242,26 +242,26 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         if owned_countryballs:
             # Getting the list of emoji IDs from the IDs of the owned countryballs
             fill_fields(
-                f"Owned {settings.collectible_name}s",
+                f"Turimi lietuvkamuoliai",
                 set(bot_countryballs[x] for x in owned_countryballs),
             )
         else:
-            entries.append((f"__**Owned {settings.collectible_name}s**__", "Nothing yet."))
+            entries.append((f"__**Turimi lietuvkamuoliai**__", "Dar tuščia."))
 
         if missing := set(y for x, y in bot_countryballs.items() if x not in owned_countryballs):
-            fill_fields(f"Missing {settings.collectible_name}s", missing)
+            fill_fields(f"Trūkstami lietuvkamuoliai", missing)
         else:
             entries.append(
                 (
-                    f"__**:tada: No missing {settings.collectible_name}, "
-                    "congratulations! :tada:**__",
+                    f"__**:tada: SURINKOTE VISUS LIETUVKAMUOLIUS, "
+                    "SVEIKINIMAI! :tada:**__",
                     "\u200B",
                 )
             )  # force empty field value
 
         source = FieldPageSource(entries, per_page=5, inline=False, clear_description=False)
         source.embed.description = (
-            f"{settings.bot_name} progression: "
+            f"Surinkti {settings.bot_name}:"
             f"**{round(len(owned_countryballs)/len(bot_countryballs)*100, 1)}%**"
         )
         source.embed.colour = discord.Colour.blurple()
@@ -341,7 +341,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
             player = await Player.get(discord_id=interaction.user.id).prefetch_related("balls")
             if await player.balls.filter(favorite=True).count() > 20:
                 await interaction.response.send_message(
-                    f"You cannot set more than 20 favorite {settings.collectible_name}s.",
+                    f"Galite turėti tik 20 mėgstamiausių kamuolių.",
                     ephemeral=True,
                 )
                 return
@@ -351,7 +351,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
             emoji = self.bot.get_emoji(countryball.countryball.emoji_id) or ""
             await interaction.response.send_message(
                 f"{emoji} `#{countryball.pk:0X}` {countryball.countryball.country} "
-                f"is now a favorite {settings.collectible_name}!",
+                f"dabar mėgstamiausias kamuolys!",
                 ephemeral=True,
             )
 
@@ -361,7 +361,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
             emoji = self.bot.get_emoji(countryball.countryball.emoji_id) or ""
             await interaction.response.send_message(
                 f"{emoji} `#{countryball.pk:0X}` {countryball.countryball.country} "
-                f"isn't a favorite {settings.collectible_name} anymore.",
+                f"nebebėra mėgstamiausias kamuolys.",
                 ephemeral=True,
             )
 
@@ -390,17 +390,17 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         player.donation_policy = policy.value
         if policy.value == DonationPolicy.ALWAYS_ACCEPT:
             await interaction.response.send_message(
-                f"Setting updated, you will now receive all donated {settings.collectible_name}s "
-                "immediately."
+                f"Nustatymas pakeistas, dabar gausi visus kamuolius "
+                "iškart."
             )
         elif policy.value == DonationPolicy.REQUEST_APPROVAL:
             await interaction.response.send_message(
-                "Setting updated, you will now have to approve donation requests manually."
+                "Nustatymas pakeistas, dabar turėsi patvirtinti visas dovanas pats."
             )
         elif policy.value == DonationPolicy.ALWAYS_DENY:
             await interaction.response.send_message(
-                f"Setting updated, it is now impossible to use {self.give.extras['mention']} with "
-                "you. It is still possible to perform donations using the trade system."
+                f"Nustatymas pakeistas, kiti dabar nebegali naudoti {self.give.extras['mention']} su "
+                "jumis. Kitavertus, įmanoma gauti dovanas per mainus."
             )
         else:
             await interaction.response.send_message("Invalid input!")
@@ -428,7 +428,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
             return
         if not countryball.countryball.tradeable:
             await interaction.response.send_message(
-                "You cannot donate this countryball.", ephemeral=True
+                "Jūs negalite dovanoti šio kamuolio", ephemeral=True
             )
             return
         if user.bot:
@@ -436,7 +436,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
             return
         if countryball.id in self.bot.locked_balls:
             await interaction.response.send_message(
-                "This countryball is currently locked for a trade. Please try again later."
+                "Šis kamuolys dabar užrakintas mainuose, bandykite vėliau."
             )
             return
         self.bot.locked_balls[countryball.id] = None
@@ -445,21 +445,21 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
 
         if new_player == old_player:
             await interaction.response.send_message(
-                f"You cannot give a {settings.collectible_name} to yourself."
+                f"Negalite dovanoti kamuolio sau."
             )
             del self.bot.locked_balls[countryball.id]
             return
         if new_player.donation_policy == DonationPolicy.ALWAYS_DENY:
             await interaction.response.send_message(
-                "This player does not accept donations. You can use trades instead."
+                "Šis žmogus nepriima dovanų, vietoj to galite naudoti mainus."
             )
             del self.bot.locked_balls[countryball.id]
             return
         elif new_player.donation_policy == DonationPolicy.REQUEST_APPROVAL:
             await interaction.response.send_message(
-                f"Hey {user.mention}, {interaction.user.name} wants to give you "
+                f"Ei, {user.mention}, {interaction.user.name} nori tau duoti "
                 f"{countryball.description(include_emoji=True, bot=interaction.client)}!\n"
-                "Do you accept this donation?",
+                "Ar priimi šią dovaną?",
                 view=DonationRequest(self.bot, interaction, countryball, new_player),
             )
             return
@@ -470,8 +470,7 @@ class Players(commands.GroupCog, group_name=settings.players_group_cog_name):
         await countryball.save()
 
         await interaction.response.send_message(
-            f"You just gave the {settings.collectible_name} "
-            f"{countryball.description(short=True, include_emoji=True, bot=self.bot)} to "
-            f"{user.mention}!"
+            f"Ką tik dovanavai {user.mention} kamuolį "
+            f"{countryball.description(short=True, include_emoji=True, bot=self.bot)} "
         )
         del self.bot.locked_balls[countryball.id]

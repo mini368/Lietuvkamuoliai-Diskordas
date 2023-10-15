@@ -14,14 +14,14 @@ if TYPE_CHECKING:
 
 activation_embed = discord.Embed(
     colour=0x00D936,
-    title=f"{settings.bot_name} activation",
-    description=f"To enable {settings.bot_name} in your server, you must "
-    f"read and accept the [Terms of Service]({settings.terms_of_service}).\n\n"
-    "As a summary, these are the rules of the bot:\n"
-    "- No farming (spamming or creating servers for balls)\n"
-    "- Selling or exchaning balls against money or other goods is forbidden\n"
-    "- Do not attempt to abuse the bot's internals\n"
-    "**Not respecting these rules will lead to a blacklist**",
+    title=f"Įgalinti lietuvkamuolius",
+    description=f"Kad įgalintumėte lietuvkamuolius savo serveryje, turite "
+    f"perskaityti ir sutikti su [Paslaugų Teikimo Sąlygomis]({settings.terms_of_service}).\n\n"
+    "Apibendrintai, čia yra šios programos taisyklės:\n"
+    "- Draudžiama kurti serverius tik dėl lietuvkamuolių\n"
+    "- Parduoti ar mainytis kamuolius už pinigus ar kitas prekes griežtai draudžiama\n"
+    "- Nebandykite piktnaudžiauti su programos vidum\n"
+    "**Šių taisyklių nepaisymas įtrauks jus į juodąjį sąrašą**",
 )
 
 
@@ -89,9 +89,9 @@ class Config(commands.GroupCog):
             await config.save()
             self.bot.dispatch("ballsdex_settings_change", guild, enabled=False)
             await interaction.response.send_message(
-                f"{settings.bot_name} is now disabled in this server. Commands will still be "
-                f"available, but the spawn of new {settings.collectible_name}s is suspended.\n"
-                "To re-enable the spawn, use the same command."
+                f"{settings.bot_name} dabar išjungti šiame serveryje. Komandos dar vis bus "
+                f"įgalintos, bet kamuoliai nebeatsiradinės.\n"
+                "Kad vėl įgalintumėte kamuolių atsiradinėjimą, panaudokite tą pačią komandą."
             )
         else:
             config.enabled = True  # type: ignore
@@ -99,11 +99,11 @@ class Config(commands.GroupCog):
             self.bot.dispatch("ballsdex_settings_change", guild, enabled=True)
             if config.spawn_channel and (channel := guild.get_channel(config.spawn_channel)):
                 await interaction.response.send_message(
-                    f"{settings.bot_name} is now enabled in this server, "
-                    f"{settings.collectible_name}s will start spawning soon in {channel.mention}."
+                    f"{settings.bot_name} dabar įgalinti šiame serveryje, "
+                    f"Kamuoliai netrukus pradės atsiradinėti {channel.mention}."
                 )
             else:
                 await interaction.response.send_message(
-                    f"{settings.bot_name} is now enabled in this server, however there is no "
-                    "spawning channel set. Please configure one with `/config channel`."
+                    f"{settings.bot_name} dabar įgalinti šiame serveryje, bet nenustatytas joks "
+                    "atsiradimo kanalas. Prašome nustatyti atsiradimo kanalą su `/config channel`."
                 )

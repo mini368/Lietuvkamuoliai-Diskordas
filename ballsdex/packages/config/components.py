@@ -17,20 +17,20 @@ class AcceptTOSView(View):
         self.add_item(
             Button(
                 style=discord.ButtonStyle.link,
-                label="Terms of Service",
+                label="Paslaugų Teikimo Sąlygos",
                 url="https://gist.github.com",
             )
         )
         self.add_item(
             Button(
                 style=discord.ButtonStyle.link,
-                label="Privacy policy",
+                label="Privatumo politika",
                 url="https://gist.github.com",
             )
         )
 
     @button(
-        label="Accept",
+        label="Sutikti",
         style=discord.ButtonStyle.success,
         emoji="\N{HEAVY CHECK MARK}\N{VARIATION SELECTOR-16}",
     )
@@ -43,8 +43,8 @@ class AcceptTOSView(View):
         )
         self.stop()
         await interaction.response.send_message(
-            f"The new spawn channel was successfully set to {self.channel.mention}.\n"
-            "Balls will start spawning as users talk unless the bot is disabled."
+            f"Naujas atsiradimo kalanas dabar yra {self.channel.mention}.\n"
+            "Kamuoliai atsiradinės kai žmonės kalbės, nebent programa yra išjungta."
         )
 
         self.accept_button.disabled = True
